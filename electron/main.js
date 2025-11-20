@@ -46,6 +46,17 @@ function createWindow() {
     return { action: 'deny' };
   });
 
+  // 过滤 Instagram 的控制台警告
+  mainWindow.webContents.on('console-message', (event, level, message) => {
+    // 隐藏 Permissions-Policy 和 Document-Policy 相关警告
+    if (message.includes('Permissions-Policy') || 
+        message.includes('Document-Policy') || 
+        message.includes('Origin trial') ||
+        message.includes('Violation') && message.includes('unload')) {
+      return; // 不输出这些警告
+    }
+  });
+
   // 开发模式打开 DevTools
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
